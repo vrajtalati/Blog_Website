@@ -8,7 +8,7 @@ const CategoryPage = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      const response = await fetch(`http://localhost:5000/api/blogs/category/${category}`);
+      const response = await fetch(`https://blog-backend-3-d071.onrender.com/api/blogs/category/${category}`);
       const data = await response.json();
       setBlogs(data);
     };

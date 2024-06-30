@@ -53,7 +53,7 @@ const NavBar = () => {
         setSearchTerm(query);
         if (query.length > 2) {
             try {
-                const response = await axios.get(`http://localhost:5000/api/blogs/search?query=${query}`);
+                const response = await axios.get(`https://blog-backend-3-d071.onrender.com/api/blogs/search?query=${query}`);
                 setSearchResults(response.data);
             } catch (error) {
                 console.error("Error fetching search results:", error);
