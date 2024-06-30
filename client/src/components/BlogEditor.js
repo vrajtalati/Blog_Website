@@ -1,15 +1,21 @@
-// src/components/BlogEditor.js
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Container, TextField, Button } from '@mui/material';
+import { Container, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { createBlog } from '../features/blogSlice';
 
-const BlogEditor = ({ initialData, onSave }) => {
-    const [title, setTitle] = useState(initialData?.title || '');
-    const [content, setContent] = useState(initialData?.content || '');
+const BlogEditor = () => {
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [category, setCategory] = useState('');
+    const dispatch = useDispatch();
 
     const handleSave = () => {
-        onSave({ title, content });
+        dispatch(createBlog({ title, content, category }));
+        setTitle('');
+        setContent('');
+        setCategory('');
     };
 
     return (
@@ -21,6 +27,18 @@ const BlogEditor = ({ initialData, onSave }) => {
                 fullWidth
                 margin="normal"
             />
+            <FormControl fullWidth margin="normal">
+                <InputLabel>Category</InputLabel>
+                <Select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <MenuItem value="Technology">Technology</MenuItem>
+                    <MenuItem value="Travel">Travel</MenuItem>
+                    <MenuItem value="Food">Food</MenuItem>
+                    <MenuItem value="Lifestyle">Lifestyle</MenuItem>
+                </Select>
+            </FormControl>
             <ReactQuill
                 theme="snow"
                 value={content}
@@ -28,7 +46,7 @@ const BlogEditor = ({ initialData, onSave }) => {
                 modules={BlogEditor.modules}
                 formats={BlogEditor.formats}
             />
-            <Button variant="contained" onClick={handleSave}>
+            <Button variant="contained" onClick={handleSave} sx={{ marginTop: '20px' }}>
                 Save
             </Button>
         </Container>

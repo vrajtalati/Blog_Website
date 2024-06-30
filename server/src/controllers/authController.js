@@ -35,7 +35,7 @@ const registerUser = async (req, res) => {
 
     jwt.sign(payload, JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.status(201).json({ user, token });
     });
   } catch (error) {
     console.error('Error registering user:', error.message);

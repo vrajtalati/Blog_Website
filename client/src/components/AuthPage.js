@@ -1,4 +1,3 @@
-// src/components/AuthPage.js
 import React, { useState } from 'react';
 import {
   Box,
@@ -12,7 +11,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setLogin } from '../features/userSlice'; // Correct import path
+import { setLogin } from '../features/userSlice';
 
 const loginSchema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Required'),
@@ -20,10 +19,9 @@ const loginSchema = yup.object().shape({
 });
 
 const signupSchema = yup.object().shape({
-  firstName: yup.string().required('Required'),
+  username: yup.string().required('Required'),
   email: yup.string().email('Invalid email').required('Required'),
   password: yup.string().required('Required'),
-  profilePic: yup.mixed().notRequired(),
 });
 
 const initialValuesLogin = {
@@ -32,10 +30,9 @@ const initialValuesLogin = {
 };
 
 const initialValuesSignup = {
-  firstName: '',
+  username: '',
   email: '',
   password: '',
-  profilePic: null,
 };
 
 const AuthPage = () => {
@@ -63,19 +60,16 @@ const AuthPage = () => {
   };
 
   const register = async (values, onSubmitProps) => {
-    const formData = new FormData();
-    for (const key in values) {
-      formData.append(key, values[key]);
-    }
-
     const response = await fetch('http://localhost:5000/api/auth/register', {
       method: 'POST',
-      body: formData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
     });
     const data = await response.json();
     onSubmitProps.resetForm();
-
-    if (data) {
+     console.log(data);
+    if (data.user && data.token) {
+      dispatch(setLogin({ user: data.user, token: data.token }));
       navigate('/home');
     } else {
       console.error('Registration failed:', data.message);
@@ -110,19 +104,18 @@ const AuthPage = () => {
           touched,
           handleChange,
           handleSubmit,
-          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit} style={{ width: isNonMobile ? '30%' : '80%' }}>
             <Box display="grid" gap="30px">
               {!isLogin && (
                 <>
                   <TextField
-                    label="First Name"
+                    label="Username"
                     onChange={handleChange}
-                    value={values.firstName}
-                    name="firstName"
-                    error={Boolean(touched.firstName && errors.firstName)}
-                    helperText={touched.firstName && errors.firstName}
+                    value={values.username}
+                    name="username"
+                    error={Boolean(touched.username && errors.username)}
+                    helperText={touched.username && errors.username}
                     fullWidth
                   />
                   <TextField
@@ -144,25 +137,6 @@ const AuthPage = () => {
                     helperText={touched.password && errors.password}
                     fullWidth
                   />
-                  <Box>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      fullWidth
-                    >
-                      Upload Profile Picture
-                      <input
-                        type="file"
-                        hidden
-                        onChange={(event) => {
-                          setFieldValue("profilePic", event.currentTarget.files[0]);
-                        }}
-                      />
-                    </Button>
-                    {touched.profilePic && errors.profilePic && (
-                      <Typography color="error">{errors.profilePic}</Typography>
-                    )}
-                  </Box>
                 </>
               )}
               {isLogin && (

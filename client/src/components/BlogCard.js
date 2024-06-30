@@ -30,7 +30,7 @@ const BlogCard = ({ blog }) => {
                     </Link>
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {blog.excerpt}
+                    {blog.content}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                     {new Date(blog.publishedDate).toLocaleDateString()}

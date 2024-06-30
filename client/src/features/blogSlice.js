@@ -1,10 +1,25 @@
-// src/features/blogSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
-export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async () => {
-    const response = await axios.get('/api/blogs');
-    return response.data;
+export const createBlog = createAsyncThunk('blogs/createBlog', async (blog, { getState }) => {
+    const state = getState();
+    const token = state.user.token; // Ensure you correctly access the token from the Redux store
+
+    const response = await fetch('http://localhost:5000/api/blogs', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+        },
+        body: JSON.stringify(blog),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create blog');
+    }
+
+    const data = await response.json();
+    return data;
 });
 
 const blogSlice = createSlice({
@@ -17,6 +32,9 @@ const blogSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(createBlog.fulfilled, (state, action) => {
+                state.blogs.push(action.payload);
+            })
             .addCase(fetchBlogs.pending, (state) => {
                 state.status = 'loading';
             })
@@ -29,6 +47,12 @@ const blogSlice = createSlice({
                 state.error = action.error.message;
             });
     },
+});
+
+export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async () => {
+    const response = await fetch('http://localhost:5000/api/blogs');
+    const data = await response.json();
+    return data;
 });
 
 export default blogSlice.reducer;
