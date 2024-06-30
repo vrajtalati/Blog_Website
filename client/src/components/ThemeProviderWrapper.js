@@ -1,12 +1,17 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { IconButton, Box } from '@mui/material';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useSelector, useDispatch } from 'react-redux';
+import { setTheme } from '../features/themeSlice';
 
 const ThemeProviderWrapper = ({ children }) => {
-    const [mode, setMode] = useState('light');
+    const dispatch = useDispatch();
+    const mode = useSelector((state) => state.theme.mode);
+
+    useEffect(() => {
+        const savedMode = localStorage.getItem('themeMode') || 'light';
+        dispatch(setTheme(savedMode));
+    }, [dispatch]);
 
     const theme = useMemo(
         () =>
@@ -31,38 +36,9 @@ const ThemeProviderWrapper = ({ children }) => {
         [mode]
     );
 
-    useEffect(() => {
-        const savedMode = localStorage.getItem('themeMode') || 'light';
-        setMode(savedMode);
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('themeMode', mode);
-    }, [mode]);
-
-    const handleThemeChange = () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-    };
-
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '10px 20px',
-                    backgroundColor: theme.palette.mode === 'light' ? 'white' : theme.palette.primary.dark,
-                    mb: 3,
-                    borderRadius: 1,
-                    boxShadow: 1,
-                }}
-            >
-                <IconButton onClick={handleThemeChange} sx={{ color: 'inherit' }}>
-                    {mode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
-                </IconButton>
-            </Box>
             {children}
         </ThemeProvider>
     );
