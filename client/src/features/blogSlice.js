@@ -4,7 +4,7 @@ export const createBlog = createAsyncThunk('blogs/createBlog', async (blog, { ge
     const state = getState();
     const token = state.user.token; // Ensure you correctly access the token from the Redux store
 
-    const response = await fetch('http://localhost:5000/api/blogs', {
+    const response = await fetch('https://blog-backend-3-d071.onrender.com/api/blogs', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const blogSlice = createSlice({
 });
 
 export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async () => {
-    const response = await fetch('http://localhost:5000/api/blogs');
+    const response = await fetch('https://blog-backend-3-d071.onrender.com/api/blogs');
     const data = await response.json();
     return data;
 });
