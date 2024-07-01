@@ -9,7 +9,7 @@ const createBlog = async (req, res) => {
       title,
       content,
       category,
-      author: req.user.user.id, // Assuming req.user contains the authenticated user's ID
+      author: req.user.user.id, 
     });
 
     await blog.save();
@@ -40,7 +40,7 @@ const getBlogsByCategory = async (req, res) => {
 
 const searchBlogs = async (req, res) => {
   try {
-    const searchTerm = req.query.query; // Adjusted to match the 'query' parameter
+    const searchTerm = req.query.query; 
     const blogs = await Blog.find({
       $or: [
         { title: { $regex: searchTerm, $options: 'i' } }, // case-insensitive search

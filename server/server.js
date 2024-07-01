@@ -14,7 +14,7 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json()); // Use body-parser to parse JSON payloads
+app.use(bodyParser.json()); 
 
 
 // Routes

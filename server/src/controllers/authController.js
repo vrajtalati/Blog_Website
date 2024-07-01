@@ -62,10 +62,11 @@ const loginUser = async (req, res) => {
         id: user.id,
       },
     };
+    console.log(user);
 
     jwt.sign(payload, JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.json({ token, user });
     });
   } catch (error) {
     console.error('Error logging in user:', error.message);

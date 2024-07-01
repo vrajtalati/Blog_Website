@@ -5,8 +5,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/category/:category', getBlogsByCategory);
 
-router.post('/', authMiddleware, createBlog); // Apply middleware to protect this route
+router.post('/', authMiddleware, createBlog); 
 router.get('/', getBlogs);
-router.get('/search', searchBlogs); // New route for search functionality
+router.get('/search', searchBlogs); 
 
 module.exports = router;
